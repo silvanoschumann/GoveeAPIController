@@ -1,0 +1,482 @@
+﻿<MW:MetroWindow x:Name="windowBk"
+                x:Class="GoveeAPIController.MainWindow"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                mc:Ignorable="d"
+                xmlns:MW="http://metro.mahapps.com/winfx/xaml/controls"
+                xmlns:MD="http://materialdesigninxaml.net/winfx/xaml/themes"
+                Title="MainWindow"
+                WindowStartupLocation="CenterScreen"
+                Width="1000"
+                MinWidth="1000"
+                Style="{StaticResource WindowTheme}"
+                Height="500"
+                MinHeight="500"
+                ResizeMode="CanResizeWithGrip"
+                Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style x:Key="SliderFocusVisualStyle1" TargetType="{x:Type Control}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Control}">
+                        <Grid/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="13*"/>
+                <ColumnDefinition Width="37*"/>
+                <ColumnDefinition Width="13*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Button Name="BtnSettings"
+                        HorizontalAlignment="Left"
+                        BorderThickness="0"
+                        Style="{StaticResource TopBtnTheme}"
+                        Width="50"
+                        Height="30"
+                        Click="BtnSettings_Click">
+                    <MD:PackIcon Kind="Settings"
+                                 Height="24" 
+                                 Width="24"/>
+                </Button>
+            </Grid>
+            <Grid Grid.Column="1" 
+                  HorizontalAlignment="Stretch" 
+                  PreviewMouseMove="Grid_PreviewMouseMove">
+
+                <TextBox
+                    Text="GOVEE LIGHTBAR CONTROLLER"
+                    FontFamily="Calibri"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    IsReadOnly="True"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    Style="{StaticResource TbTheme}"/>
+
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right">
+
+                    <Button Name="BtnMinimize" 
+                            BorderThickness="0"
+                            Style="{StaticResource TopBtnTheme}"
+                            Height="30"
+                            Width="50"
+                            Click="BtnMinimize_Click">
+
+                        <MD:PackIcon Kind="WindowMinimize"
+                                     Width="24"
+                                     Height="24">
+                        </MD:PackIcon>
+
+                    </Button>
+
+                    <ToggleButton Name="TglBtnMaximize"
+                                  Height="30"
+                                  Width="50"
+                                  Click="TglBtnMaximize_Click">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton">
+                                <Setter Property="Height" Value="28"/>
+                                <Setter Property="Width" Value="28"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border Name="TBorder"
+                                                    BorderThickness="0">
+                                                <Grid HorizontalAlignment="Stretch"
+                                                          VerticalAlignment="Stretch">
+                                                    <MD:PackIcon Name="PIMax"
+                                                                 Kind="WindowMaximize"
+                                                                 Width="24"
+                                                                 Height="24"
+                                                                 Foreground="{DynamicResource ForegroundColor}"
+                                                                 HorizontalAlignment="Stretch"
+                                                                 VerticalAlignment="Stretch">
+                                                    </MD:PackIcon>
+
+                                                    <MD:PackIcon Name="PIRes"
+                                                                 Kind="WindowRestore"
+                                                                 Visibility="Collapsed"
+                                                                 Foreground="{DynamicResource ForegroundColor}"
+                                                                 Width="24"
+                                                                 Height="24"
+                                                                 HorizontalAlignment="Stretch"
+                                                                 VerticalAlignment="Stretch">
+                                                    </MD:PackIcon>
+
+                                                </Grid>
+
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked"
+                                                         Value="True">
+
+                                                    <Setter TargetName="PIMax"
+                                                            Property="Visibility"
+                                                            Value="Collapsed"/>
+
+                                                    <Setter TargetName="PIRes"
+                                                            Property="Visibility"
+                                                            Value="Visible"/>
+
+                                                </Trigger>
+
+                                                <Trigger Property="IsMouseOver"
+                                                         Value="True">
+                                                    <Setter TargetName="TBorder"
+                                                            Property="Background"
+                                                            Value="#FF424242"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+
+                    <Button Name="BtnClose"
+                            Click="BtnClose_Click"
+                            BorderThickness="0"
+                            Height="30"
+                            Width="50"
+                            HorizontalAlignment="Right"
+                            Style="{StaticResource BtnCloseStyle}">
+                        <MD:PackIcon Kind="WindowClose"
+                                         Width="24"
+                                         Height="24">
+                        </MD:PackIcon>
+                    </Button>
+
+                </StackPanel>
+
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Border BorderThickness="1" BorderBrush="#FF424242">
+                </Border>
+
+                <Slider x:Name="brightness_slider"
+                        Maximum="100"
+                        HorizontalAlignment="Center"
+                        Margin="38 44 0 0"
+                        Style="{StaticResource SliderTheme}"
+                        VerticalAlignment="Top"
+                        Width="50"
+                        Orientation="Vertical"
+                        Height="198"
+                        TickPlacement="None"
+                        SmallChange="1"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="1"
+                        Value="{Binding ElementName=brightness_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox x:Name="brightness_txtbox"
+                         HorizontalAlignment="Center"
+                         Margin="0 300 0 0"
+                         TextWrapping="Wrap"
+                         Text="{Binding ElementName=brightness_slider, Path=Value}"
+                         VerticalAlignment="Top"
+                         Width="80"
+                         Style="{StaticResource TbTheme}"
+                         Height="25"
+                         BorderThickness="1"/>
+
+                <Button Name="BtnBrightness"
+                        Content="BRIGHTNESS" 
+                        Margin="0 0 0 50"
+                        Style="{StaticResource BtnTheme}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Click="BtnBrightness_Click">
+
+                </Button>
+
+            </Grid>
+            <Grid Grid.Column="1">
+                <Border BorderThickness="1" BorderBrush="#FF424242"/>
+
+                <Slider x:Name="colorTemp_slider"
+                        Maximum="9000"
+                        Minimum="2000"
+                        HorizontalAlignment="Center"
+                        Margin="38 44 0 0"
+                        Foreground="white"
+                        VerticalAlignment="Top"
+                        Width="50"
+                        Orientation="Vertical"
+                        Height="198"
+                        Background="Transparent"
+                        TickPlacement="None"
+                        SmallChange="1"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="1" 
+                        Value="{Binding ElementName=colorTemp_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox x:Name="colorTemp_txtbox"
+                         HorizontalAlignment="Center"
+                         Margin="0 300 0 0"
+                         TextWrapping="Wrap"
+                         Text="{Binding ElementName=colorTemp_slider, Path=Value}"
+                         VerticalAlignment="Top"
+                         Style="{StaticResource TbTheme}"
+                         Height="25"
+                         Width="80"
+                         BorderThickness="1"/>
+
+                <Button Name="BtnColorTemp"
+                        Content="COLORTEMP"
+                        Style="{StaticResource BtnTheme}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Margin="0 0 0 50" 
+                        Click="BtnColorTemp_Click">
+                </Button>
+            </Grid>
+            <Grid Grid.Column="2">
+
+                <Border BorderThickness="1" BorderBrush="#FF424242"/>
+                <Label Name="red_Lbl" Content="RED"
+                       HorizontalAlignment="Left"
+                       Margin="30 10"
+                       FontFamily="Calibri"
+                       FontWeight="Bold"
+                       FontSize="15">
+                </Label>
+
+                <Label Name="blue_Lbl" Content="BLUE"
+                       HorizontalAlignment="Center"
+                       Margin="0 10"
+                       FontFamily="Calibri"
+                       FontWeight="Bold"
+                       FontSize="15">
+                </Label>
+
+                <Label Name="green_Lbl" Content="GREEN"
+                       HorizontalAlignment="Right"
+                       Margin="0 10 10 0"
+                       FontFamily="Calibri"
+                       FontWeight="Bold"
+                       FontSize="15">
+                </Label>
+
+                <Slider x:Name="red_slider"
+                    Maximum="255"
+                    HorizontalAlignment="Left"
+                    Margin="38 44 0 0"
+                    Foreground="White"
+                    VerticalAlignment="Top"
+                    Width="50"
+                    Orientation="Vertical"
+                    Height="198"
+                    Background="Transparent"
+                    TickPlacement="None"
+                    SmallChange="1"
+                    IsSnapToTickEnabled="True"
+                    TickFrequency="1"
+                    Value="{Binding ElementName=red_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox x:Name="red_txtbox" 
+                         HorizontalAlignment="left" 
+                         Margin="10 300 0 0" 
+                         TextWrapping="Wrap" 
+                         BorderThickness="1"
+                         Text="{Binding ElementName=red_slider, Path=Value}"
+                         VerticalAlignment="Top" 
+                         Style="{StaticResource TbTheme}"
+                         Height="25"
+                         Width="70"/>
+
+                <Slider x:Name="blue_slider"
+                    Maximum="255"
+                    HorizontalAlignment="Center"
+                    Margin="38 44 0 0"
+                    Foreground="White"
+                    VerticalAlignment="Top"
+                    Width="50"
+                    Orientation="Vertical"
+                    Height="198"
+                    Background="Transparent"
+                    TickPlacement="None"
+                    SmallChange="1"
+                    IsSnapToTickEnabled="True"
+                    TickFrequency="1"
+                    Value="{Binding ElementName=blue_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox x:Name="blue_txtbox" 
+                         TextWrapping="Wrap"
+                         BorderThickness="1"
+                         Style="{StaticResource TbTheme}"
+                         Height="25"
+                         Text="{Binding ElementName=blue_slider, Path=Value}"
+                         Margin="0 300 0 0" 
+                         HorizontalAlignment="Center" 
+                         VerticalAlignment="Top"
+                         Width="70"/>
+
+                <Slider x:Name="green_slider"
+                    Maximum="255"
+                    HorizontalAlignment="Right"
+                    Margin="38 44 0 0"
+                    Foreground="White"
+                    VerticalAlignment="Top"
+                    Width="50"
+                    Orientation="Vertical"
+                    Height="198"
+                    Background="Transparent"
+                    TickPlacement="None"
+                    SmallChange="1"
+                    IsSnapToTickEnabled="True"
+                    TickFrequency="1"
+                    Value="{Binding ElementName=green_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBox x:Name="green_txtbox" 
+                         Style="{StaticResource TbTheme}"
+                         Height="25"
+                         HorizontalAlignment="Right" 
+                         Margin="0 300 10 0" 
+                         TextWrapping="Wrap" 
+                         BorderThickness="1"
+                         Text="{Binding ElementName=green_slider, Path=Value}"
+                         VerticalAlignment="Top" 
+                         Width="70"/>
+
+                <Button Name="BtnColor"
+                        Content="COLOR" 
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource BtnTheme}"
+                        Margin="0 0 0 50"
+                        Click="BtnColor_Click">
+                </Button>
+            </Grid>
+
+            <Grid Grid.Column="3">
+                <TextBox Background="Transparent"
+                         Text="{Binding ApiName,  UpdateSourceTrigger=PropertyChanged}"
+                         FontSize="20"
+                         Style="{StaticResource TbTheme}"
+                         Height="36" 
+                         Margin="30 30 30 0"
+                         VerticalAlignment="Top">
+
+                </TextBox>
+                <Border BorderThickness="1" BorderBrush="#FF424242"/>
+
+                <Button x:Name="BtnDeviceState"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        Margin="10 80 0 0"
+                        Content="STATE"
+                        Style="{StaticResource BtnTheme}"
+                        IsEnabled="True" Click="BtnDeviceState_Click"
+                        />
+
+                <Button VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource BtnTheme}"
+                        Margin="10 120 0 0"
+                        Content="DEVICE">
+                </Button>
+
+                <Button Width="100"
+                        Height="50"
+                        x:Name="TglBtnTheme"
+                        Style="{StaticResource BtnTheme}"
+                        Click="TglBtnTheme_Click">dark</Button>
+
+                <TextBox Background="Transparent"
+                         Text="{Binding TbResult,  UpdateSourceTrigger=PropertyChanged}"
+                         FontSize="20"
+                         Style="{StaticResource TbTheme}"
+                         Height="36" 
+                         Margin="0 0 0 30"
+                         Width="100" 
+                         HorizontalAlignment="Center" VerticalAlignment="Bottom">
+
+                </TextBox>
+
+                <ToggleButton
+                    Name="TglBtnSwitch"
+                    Click="TglBtnSwitch_Click">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Height" Value="36"/>
+                            <Setter Property="Width" Value="36"/>
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                            <Setter Property="VerticalAlignment" Value="Bottom"/>
+                            <Setter Property="Margin" Value="0 0 30 30"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border CornerRadius="10">
+                                            <Grid>
+
+                                                <MD:PackIcon Name="PIOff"
+                                                             Background="DarkRed"
+                                                             Kind="PowerSettingsNew"
+                                                             Width="36"
+                                                             Height="36"
+                                                             HorizontalAlignment="Stretch"
+                                                             VerticalAlignment="Stretch"/>
+
+                                                <MD:PackIcon Name="PIOn"
+                                                             Background="LimeGreen"
+                                                             Kind="PowerSettingsNew"
+                                                             Visibility="Collapsed"
+                                                             Width="36"
+                                                             Height="36"
+                                                             HorizontalAlignment="Stretch"
+                                                             VerticalAlignment="Stretch">
+                                                </MD:PackIcon>
+                                            </Grid>
+
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="PIOn" Property="Visibility" Value="Visible"/>
+                                                <Setter TargetName="PIOff" Property="Visibility" Value="Collapsed"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+            </Grid>
+        </Grid>
+    </Grid>
+</MW:MetroWindow>

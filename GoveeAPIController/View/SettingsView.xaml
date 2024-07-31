@@ -1,0 +1,87 @@
+﻿<MW:MetroWindow x:Class="GoveeAPIController.View.SettingsView"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                Style="{StaticResource WindowTheme}"
+                xmlns:MW="http://metro.mahapps.com/winfx/xaml/controls"
+                xmlns:MD="http://materialdesigninxaml.net/winfx/xaml/themes"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:local="clr-namespace:GoveeAPIController.View"
+                mc:Ignorable="d"
+                Title="Settings" Height="300" Width="550">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="1" 
+                  HorizontalAlignment="Stretch" 
+                  PreviewMouseMove="Grid_PreviewMouseMove">
+
+                <TextBox
+                    Text="SETTINGS"
+                    FontFamily="Calibri"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    IsReadOnly="True"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    Style="{StaticResource TbTheme}"/>
+            </Grid>
+            <Grid Grid.Column="2">
+
+                <Button Name="BtnClose"
+                    Click="BtnClose_Click"
+                    BorderThickness="0"
+                    Height="30"
+                    Width="50"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource BtnCloseStyle}">
+                    <MD:PackIcon Kind="WindowClose"
+                                 Width="24"
+                                 Height="24">
+                    </MD:PackIcon>
+                </Button>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1" Grid.RowSpan="2">
+            <Label Foreground="White">
+                Theme
+            </Label>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <ListView ItemsSource="{Binding ThemeCollection}" Margin="5">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Header="Pfad" DisplayMemberBinding="{Binding Path}"/>
+                        <GridViewColumn Header="ausgewählt">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsSelected}"></CheckBox>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+
+            </ListView>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Button x:Name="BtnSave" Margin="10" HorizontalAlignment="Right" Width="100" Content="SPEICHERN" Style="{StaticResource BtnTheme}" Click="BtnSave_Click"></Button>
+        </Grid>
+    </Grid>
+</MW:MetroWindow>
