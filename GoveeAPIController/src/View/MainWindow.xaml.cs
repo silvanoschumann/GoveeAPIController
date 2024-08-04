@@ -1,19 +1,17 @@
-﻿using GoveeAPIController.View;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Windows.Data;
+﻿using GoveeAPIController.src.Services;
+using GoveeAPIController.View;
 
 namespace GoveeAPIController;
 
 public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 {
-    private bool isDarkMode = false;
-    private static readonly HttpClient client = new();
     const int SLEEPTIME = 4000;
     const string DARKTHEMEURL = "./src/resources/Themes/DarkTheme.xaml";
     const string LIGHTTHEMEURL = "./src/resources/Themes/LightTheme.xaml";
-
-    public string APIKEY = "";
+    const string MODEL = "H6056";
+    const string DEVICE = "7E:F6:CD:32:37:36:49:09";
+    public string APIKEY;
+    public HttpService httpServ;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -33,6 +31,8 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     }
 
     private string _ApiName;
+    private bool _hasAPIKey;
+
     public string ApiName
     {
         get => _ApiName; set
@@ -45,21 +45,42 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         }
     }
 
+    public bool HasAPIKey
+    {
+        get => _hasAPIKey;
+        set
+        {
+            if (_hasAPIKey != value)
+            {
+                _hasAPIKey = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public MainWindow()
     {
-        LookForApiKey();
+        HasAPIKey = LookForApiKey();
+        httpServ = new(MODEL, DEVICE, APIKEY);
         SetTheme();
         InitializeComponent();
         this.DataContext = this;
     }
 
-    private void LookForApiKey()
+    private bool LookForApiKey()
     {
         if (ConfigurationManager.AppSettings["Api-Key"] != null)
         {
             APIKEY = ConfigurationManager.AppSettings["Api-Key"];
             ApiName = APIKEY;
         }
+
+        if (!string.IsNullOrWhiteSpace(APIKEY))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -153,176 +174,35 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         GetDeviceState();
     }
 
-    private void Window_Loaded(object sender, RoutedEventArgs e)
-    {
-        //GetDeviceState();
-    }
-
     public async Task PutColorTemp(int colorTemp)
     {
-        GoveeLightBar<int> Govee = new()
-        {
-            device = "7E:F6:CD:32:37:36:49:09",
-            model = "H6056",
-            cmd = new Command<int>()
-            {
-                name = "colorTem",
-                value = colorTemp
-            },
-        };
-
-        string json = JsonConvert.SerializeObject(Govee, Formatting.Indented);
-
-        try
-        {
-            var request = new HttpRequestMessage(HttpMethod.Put, "https://developer-api.govee.com/v1/devices/control");
-            request.Headers.Add("Govee-API-Key", APIKEY);
-
-            var content = new StringContent(json, null, "application/json");
-            request.Content = content;
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            TbResult = response.StatusCode.ToString();
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
+        await httpServ.SetColorTemp(colorTemp);
     }
 
     public async Task PutBrightness(int brightness)
     {
-        GoveeLightBar<int> Govee = new()
-        {
-            device = "7E:F6:CD:32:37:36:49:09",
-            model = "H6056",
-            cmd = new Command<int>()
-            {
-                name = "brightness",
-                value = brightness
-            },
-        };
-
-        string json = JsonConvert.SerializeObject(Govee, Formatting.Indented);
-
-        try
-        {
-            var request = new HttpRequestMessage(HttpMethod.Put, "https://developer-api.govee.com/v1/devices/control");
-            request.Headers.Add("Govee-API-Key", APIKEY);
-
-            var content = new StringContent(json, null, "application/json");
-            request.Content = content;
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            TbResult = response.StatusCode.ToString();
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
+        await httpServ.SetBrightness(brightness);
     }
 
     public async Task PutOnOff(string OnOff)
     {
-        GoveeLightBar<string> Govee = new()
-        {
-            device = "7E:F6:CD:32:37:36:49:09",
-            model = "H6056",
-            cmd = new Command<string>()
-            {
-                name = "turn",
-                value = OnOff
-            },
-        };
-
-        string json = JsonConvert.SerializeObject(Govee, Formatting.Indented);
-
-        try
-        {
-            HttpRequestMessage request = new(HttpMethod.Put, "https://developer-api.govee.com/v1/devices/control");
-            request.Headers.Add("Govee-API-Key", APIKEY);
-
-            var content = new StringContent(json, null, "application/json");
-            request.Content = content;
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            TbResult = response.StatusCode.ToString();
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
+        await httpServ.ToggleLight(OnOff);
     }
 
     public async Task PutColor(RgbColor color)
     {
-        GoveeLightBar<RgbColor> Govee = new()
-        {
-            device = "7E:F6:CD:32:37:36:49:09",
-            model = "H6056",
-            cmd = new Command<RgbColor>()
-            {
-                name = "color",
-                value = color
-            },
-        };
-
-        string json = JsonConvert.SerializeObject(Govee, Formatting.Indented);
-
-        try
-        {
-            HttpRequestMessage request = new(HttpMethod.Put, "https://developer-api.govee.com/v1/devices/control");
-            request.Headers.Add("Govee-API-Key", APIKEY);
-
-            var content = new StringContent(json, null, "application/json");
-            request.Content = content;
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            TbResult = response.StatusCode.ToString();
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
+        await httpServ.SetColor(color);
     }
 
     public async void GetDeviceState()
     {
-        GoveeLightBar<string> Govee = new()
+        var response = await httpServ.GetDeviceState();
+
+        if (response != null)
         {
-            device = "7E:F6:CD:32:37:36:49:09",
-            model = "H6056"
-        };
-
-        JsonConvert.SerializeObject(Govee, Formatting.Indented);
-        try
-        {
-            HttpRequestMessage request = new(HttpMethod.Get, "https://developer-api.govee.com/v1/devices/state?device=7E:F6:CD:32:37:36:49:09&model=H6056&");
-
-            request.Headers.Add("Govee-API-Key", APIKEY);
-            var content = new StringContent("", null, "text/plain");
-            request.Content = content;
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            TbResult = response.StatusCode.ToString();
-            var jsonString = await response.Content.ReadAsStringAsync();
-            var deserialized = System.Text.Json.JsonSerializer.Deserialize<DeviceStateResponse>(jsonString);
-
-            if (deserialized.code != 200)
-                throw new Exception($"Request failed. Status code: {deserialized.code}, Message: {deserialized.message}");
-
-            SetSlider(deserialized);
-
-
+            SetSlider(response);
         }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
+
     }
 
     private void SetSlider(DeviceStateResponse response)
@@ -377,11 +257,6 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
             WindowStartupLocation = WindowStartupLocation.CenterOwner
         };
         settingsView.ShowDialog();
-    }
-
-    private void TglBtnTheme_Click(object sender, RoutedEventArgs e)
-    {
-        isDarkMode = !isDarkMode;
     }
 
     public void SetTheme()

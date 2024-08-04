@@ -1,6 +1,6 @@
 ﻿<MW:MetroWindow x:Class="GoveeAPIController.View.SettingsView"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                Style="{StaticResource WindowTheme}"
+                Style="{DynamicResource WindowTheme}"
                 xmlns:MW="http://metro.mahapps.com/winfx/xaml/controls"
                 xmlns:MD="http://materialdesigninxaml.net/winfx/xaml/themes"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -38,7 +38,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     BorderThickness="0"
-                    Style="{StaticResource TbTheme}"/>
+                    Style="{DynamicResource TbTheme}"/>
             </Grid>
             <Grid Grid.Column="2">
 
@@ -48,7 +48,7 @@
                     Height="30"
                     Width="50"
                     HorizontalAlignment="Right"
-                    Style="{StaticResource BtnCloseStyle}">
+                    Style="{DynamicResource BtnCloseStyle}">
                     <MD:PackIcon Kind="WindowClose"
                                  Width="24"
                                  Height="24">
@@ -56,8 +56,10 @@
                 </Button>
             </Grid>
         </Grid>
+
         <Grid Grid.Row="1" Grid.RowSpan="2">
-            <Label Foreground="White">
+            <Label Foreground="White" 
+                   Margin="10 0 0 0">
                 Theme
             </Label>
         </Grid>
@@ -80,8 +82,16 @@
 
             </ListView>
         </Grid>
+
         <Grid Grid.Row="3">
-            <Button x:Name="BtnSave" Margin="10" HorizontalAlignment="Right" Width="100" Content="SPEICHERN" Style="{StaticResource BtnTheme}" Click="BtnSave_Click"></Button>
+            <Button x:Name="BtnSave" 
+                    Margin="10" 
+                    HorizontalAlignment="Right" 
+                    Width="100" 
+                    Content="SPEICHERN" 
+                    Style="{DynamicResource BtnTheme}" 
+                    Click="BtnSave_Click">
+            </Button>
         </Grid>
     </Grid>
 </MW:MetroWindow>

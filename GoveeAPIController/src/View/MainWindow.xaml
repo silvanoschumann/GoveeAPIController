@@ -14,8 +14,7 @@
                 Style="{StaticResource WindowTheme}"
                 Height="500"
                 MinHeight="500"
-                ResizeMode="CanResizeWithGrip"
-                Loaded="Window_Loaded">
+                ResizeMode="CanResizeWithGrip">
 
     <Window.Resources>
         <Style x:Key="SliderFocusVisualStyle1" TargetType="{x:Type Control}">
@@ -46,7 +45,7 @@
                 <Button Name="BtnSettings"
                         HorizontalAlignment="Left"
                         BorderThickness="0"
-                        Style="{StaticResource TopBtnTheme}"
+                        Style="{DynamicResource TopBtnTheme}"
                         Width="50"
                         Height="30"
                         Click="BtnSettings_Click">
@@ -68,7 +67,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     BorderThickness="0"
-                    Style="{StaticResource TbTheme}"/>
+                    Style="{DynamicResource TbTheme}"/>
 
             </Grid>
 
@@ -79,7 +78,7 @@
 
                     <Button Name="BtnMinimize" 
                             BorderThickness="0"
-                            Style="{StaticResource TopBtnTheme}"
+                            Style="{DynamicResource TopBtnTheme}"
                             Height="30"
                             Width="50"
                             Click="BtnMinimize_Click">
@@ -162,7 +161,7 @@
                             Height="30"
                             Width="50"
                             HorizontalAlignment="Right"
-                            Style="{StaticResource BtnCloseStyle}">
+                            Style="{DynamicResource BtnCloseStyle}">
                         <MD:PackIcon Kind="WindowClose"
                                          Width="24"
                                          Height="24">
@@ -191,7 +190,7 @@
                         Maximum="100"
                         HorizontalAlignment="Center"
                         Margin="38 44 0 0"
-                        Style="{StaticResource SliderTheme}"
+                        Style="{DynamicResource SliderTheme}"
                         VerticalAlignment="Top"
                         Width="50"
                         Orientation="Vertical"
@@ -209,16 +208,17 @@
                          Text="{Binding ElementName=brightness_slider, Path=Value}"
                          VerticalAlignment="Top"
                          Width="80"
-                         Style="{StaticResource TbTheme}"
+                         Style="{DynamicResource TbTheme}"
                          Height="25"
                          BorderThickness="1"/>
 
                 <Button Name="BtnBrightness"
                         Content="BRIGHTNESS" 
                         Margin="0 0 0 50"
-                        Style="{StaticResource BtnTheme}"
+                        Style="{DynamicResource BtnTheme}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
+                        IsEnabled="{Binding HasAPIKey}"
                         Click="BtnBrightness_Click">
 
                 </Button>
@@ -250,17 +250,18 @@
                          TextWrapping="Wrap"
                          Text="{Binding ElementName=colorTemp_slider, Path=Value}"
                          VerticalAlignment="Top"
-                         Style="{StaticResource TbTheme}"
+                         Style="{DynamicResource TbTheme}"
                          Height="25"
                          Width="80"
                          BorderThickness="1"/>
 
                 <Button Name="BtnColorTemp"
                         Content="COLORTEMP"
-                        Style="{StaticResource BtnTheme}"
+                        Style="{DynamicResource BtnTheme}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
                         Margin="0 0 0 50" 
+                        IsEnabled="{Binding HasAPIKey}"
                         Click="BtnColorTemp_Click">
                 </Button>
             </Grid>
@@ -314,7 +315,7 @@
                          BorderThickness="1"
                          Text="{Binding ElementName=red_slider, Path=Value}"
                          VerticalAlignment="Top" 
-                         Style="{StaticResource TbTheme}"
+                         Style="{DynamicResource TbTheme}"
                          Height="25"
                          Width="70"/>
 
@@ -337,7 +338,7 @@
                 <TextBox x:Name="blue_txtbox" 
                          TextWrapping="Wrap"
                          BorderThickness="1"
-                         Style="{StaticResource TbTheme}"
+                         Style="{DynamicResource TbTheme}"
                          Height="25"
                          Text="{Binding ElementName=blue_slider, Path=Value}"
                          Margin="0 300 0 0" 
@@ -362,7 +363,7 @@
                     Value="{Binding ElementName=green_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <TextBox x:Name="green_txtbox" 
-                         Style="{StaticResource TbTheme}"
+                         Style="{DynamicResource TbTheme}"
                          Height="25"
                          HorizontalAlignment="Right" 
                          Margin="0 300 10 0" 
@@ -376,7 +377,8 @@
                         Content="COLOR" 
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
-                        Style="{StaticResource BtnTheme}"
+                        Style="{DynamicResource BtnTheme}"
+                        IsEnabled="{Binding HasAPIKey}"
                         Margin="0 0 0 50"
                         Click="BtnColor_Click">
                 </Button>
@@ -386,7 +388,7 @@
                 <TextBox Background="Transparent"
                          Text="{Binding ApiName,  UpdateSourceTrigger=PropertyChanged}"
                          FontSize="20"
-                         Style="{StaticResource TbTheme}"
+                         Style="{DynamicResource TbTheme}"
                          Height="36" 
                          Margin="30 30 30 0"
                          VerticalAlignment="Top">
@@ -399,27 +401,23 @@
                         HorizontalAlignment="Left"
                         Margin="10 80 0 0"
                         Content="STATE"
-                        Style="{StaticResource BtnTheme}"
-                        IsEnabled="True" Click="BtnDeviceState_Click"
+                        Style="{DynamicResource BtnTheme}"
+                        IsEnabled="{Binding HasAPIKey}"
+                        Click="BtnDeviceState_Click"
                         />
 
                 <Button VerticalAlignment="Top"
                         HorizontalAlignment="Left"
-                        Style="{StaticResource BtnTheme}"
+                        Style="{DynamicResource BtnTheme}"
+                        IsEnabled="{Binding HasAPIKey}"
                         Margin="10 120 0 0"
                         Content="DEVICE">
                 </Button>
 
-                <Button Width="100"
-                        Height="50"
-                        x:Name="TglBtnTheme"
-                        Style="{StaticResource BtnTheme}"
-                        Click="TglBtnTheme_Click">dark</Button>
-
                 <TextBox Background="Transparent"
                          Text="{Binding TbResult,  UpdateSourceTrigger=PropertyChanged}"
                          FontSize="20"
-                         Style="{StaticResource TbTheme}"
+                         Style="{DynamicResource TbTheme}"
                          Height="36" 
                          Margin="0 0 0 30"
                          Width="100" 
@@ -427,8 +425,9 @@
 
                 </TextBox>
 
-                <ToggleButton
+                <ToggleButton 
                     Name="TglBtnSwitch"
+                    IsEnabled="{Binding HasAPIKey}"
                     Click="TglBtnSwitch_Click">
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton">
