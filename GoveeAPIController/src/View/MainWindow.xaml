@@ -30,7 +30,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -47,7 +47,7 @@
                         BorderThickness="0"
                         Style="{DynamicResource TopBtnTheme}"
                         Width="50"
-                        Height="30"
+                        Height="50"
                         Click="BtnSettings_Click">
                     <MD:PackIcon Kind="Settings"
                                  Height="24" 
@@ -79,7 +79,7 @@
                     <Button Name="BtnMinimize" 
                             BorderThickness="0"
                             Style="{DynamicResource TopBtnTheme}"
-                            Height="30"
+                            Height="50"
                             Width="50"
                             Click="BtnMinimize_Click">
 
@@ -91,8 +91,8 @@
                     </Button>
 
                     <ToggleButton Name="TglBtnMaximize"
-                                  Height="30"
                                   Width="50"
+                                  Height="50"
                                   Click="TglBtnMaximize_Click">
                         <ToggleButton.Style>
                             <Style TargetType="ToggleButton">
@@ -158,7 +158,7 @@
                     <Button Name="BtnClose"
                             Click="BtnClose_Click"
                             BorderThickness="0"
-                            Height="30"
+                            Height="50"
                             Width="50"
                             HorizontalAlignment="Right"
                             Style="{DynamicResource BtnCloseStyle}">
@@ -189,12 +189,11 @@
                 <Slider x:Name="brightness_slider"
                         Maximum="100"
                         HorizontalAlignment="Center"
-                        Margin="38 44 0 0"
-                        Style="{DynamicResource SliderTheme}"
+                        Margin="0 44 0 0"
                         VerticalAlignment="Top"
-                        Width="50"
+                        Style="{DynamicResource SliderTheme}"
                         Orientation="Vertical"
-                        Height="198"
+                        Height="200"
                         TickPlacement="None"
                         SmallChange="1"
                         IsSnapToTickEnabled="True"
@@ -231,13 +230,11 @@
                         Maximum="9000"
                         Minimum="2000"
                         HorizontalAlignment="Center"
-                        Margin="38 44 0 0"
-                        Foreground="white"
+                        Margin="0 44 0 0"
                         VerticalAlignment="Top"
-                        Width="50"
                         Orientation="Vertical"
-                        Height="198"
-                        Background="Transparent"
+                        Height="200"
+                        Style="{DynamicResource SliderTheme}"
                         TickPlacement="None"
                         SmallChange="1"
                         IsSnapToTickEnabled="True"
@@ -265,123 +262,130 @@
                         Click="BtnColorTemp_Click">
                 </Button>
             </Grid>
+
             <Grid Grid.Column="2">
-
                 <Border BorderThickness="1" BorderBrush="#FF424242"/>
-                <Label Name="red_Lbl" Content="RED"
-                       HorizontalAlignment="Left"
-                       Margin="30 10"
-                       FontFamily="Calibri"
-                       FontWeight="Bold"
-                       FontSize="15">
-                </Label>
 
-                <Label Name="blue_Lbl" Content="BLUE"
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Label Name="red_Lbl" Content="RED"
                        HorizontalAlignment="Center"
-                       Margin="0 10"
                        FontFamily="Calibri"
                        FontWeight="Bold"
                        FontSize="15">
-                </Label>
+                        </Label>
 
-                <Label Name="green_Lbl" Content="GREEN"
-                       HorizontalAlignment="Right"
-                       Margin="0 10 10 0"
-                       FontFamily="Calibri"
-                       FontWeight="Bold"
-                       FontSize="15">
-                </Label>
+                        <Slider x:Name="red_slider"
+                                Maximum="255"
+                                HorizontalAlignment="Center"
+                                Margin="0 44 0 0"
+                                VerticalAlignment="Top"
+                                Orientation="Vertical"
+                                Height="200"
+                                Style="{DynamicResource SliderTheme}"
+                                TickPlacement="None"
+                                SmallChange="1"
+                                IsSnapToTickEnabled="True"
+                                TickFrequency="1"
+                                Value="{Binding ElementName=red_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Slider x:Name="red_slider"
-                    Maximum="255"
-                    HorizontalAlignment="Left"
-                    Margin="38 44 0 0"
-                    Foreground="White"
-                    VerticalAlignment="Top"
-                    Width="50"
-                    Orientation="Vertical"
-                    Height="198"
-                    Background="Transparent"
-                    TickPlacement="None"
-                    SmallChange="1"
-                    IsSnapToTickEnabled="True"
-                    TickFrequency="1"
-                    Value="{Binding ElementName=red_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox x:Name="red_txtbox" 
+                                 HorizontalAlignment="Center" 
+                                 Margin="0 300 0 0" 
+                                 TextWrapping="Wrap" 
+                                 BorderThickness="1"
+                                 Text="{Binding ElementName=red_slider, Path=Value}"
+                                 VerticalAlignment="Top" 
+                                 Style="{DynamicResource TbTheme}"
+                                 Height="25"
+                                 Width="70"/>
+                    </Grid>
 
-                <TextBox x:Name="red_txtbox" 
-                         HorizontalAlignment="left" 
-                         Margin="10 300 0 0" 
-                         TextWrapping="Wrap" 
-                         BorderThickness="1"
-                         Text="{Binding ElementName=red_slider, Path=Value}"
-                         VerticalAlignment="Top" 
-                         Style="{DynamicResource TbTheme}"
-                         Height="25"
-                         Width="70"/>
+                    <Grid Grid.Column="1">
+                        <Label Name="blue_Lbl" Content="BLUE"
+                               HorizontalAlignment="Center"
+                               FontFamily="Calibri"
+                               FontWeight="Bold"
+                               FontSize="15">
+                        </Label>
 
-                <Slider x:Name="blue_slider"
-                    Maximum="255"
-                    HorizontalAlignment="Center"
-                    Margin="38 44 0 0"
-                    Foreground="White"
-                    VerticalAlignment="Top"
-                    Width="50"
-                    Orientation="Vertical"
-                    Height="198"
-                    Background="Transparent"
-                    TickPlacement="None"
-                    SmallChange="1"
-                    IsSnapToTickEnabled="True"
-                    TickFrequency="1"
-                    Value="{Binding ElementName=blue_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Slider x:Name="blue_slider"
+                                Maximum="255"
+                                HorizontalAlignment="Center"
+                                Margin="0 44 0 0"
+                                Style="{DynamicResource SliderTheme}"
+                                VerticalAlignment="Top"
+                                Orientation="Vertical"
+                                Height="200"
+                                TickPlacement="None"
+                                SmallChange="1"
+                                IsSnapToTickEnabled="True"
+                                TickFrequency="1"
+                                Value="{Binding ElementName=blue_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBox x:Name="blue_txtbox" 
-                         TextWrapping="Wrap"
-                         BorderThickness="1"
-                         Style="{DynamicResource TbTheme}"
-                         Height="25"
-                         Text="{Binding ElementName=blue_slider, Path=Value}"
-                         Margin="0 300 0 0" 
-                         HorizontalAlignment="Center" 
-                         VerticalAlignment="Top"
-                         Width="70"/>
+                        <TextBox x:Name="blue_txtbox" 
+                                 TextWrapping="Wrap"
+                                 BorderThickness="1"
+                                 Style="{DynamicResource TbTheme}"
+                                 Height="25"
+                                 Text="{Binding ElementName=blue_slider, Path=Value}"
+                                 Margin="0 300 0 0" 
+                                 HorizontalAlignment="Center" 
+                                 VerticalAlignment="Top"
+                                 Width="70"/>
 
-                <Slider x:Name="green_slider"
-                    Maximum="255"
-                    HorizontalAlignment="Right"
-                    Margin="38 44 0 0"
-                    Foreground="White"
-                    VerticalAlignment="Top"
-                    Width="50"
-                    Orientation="Vertical"
-                    Height="198"
-                    Background="Transparent"
-                    TickPlacement="None"
-                    SmallChange="1"
-                    IsSnapToTickEnabled="True"
-                    TickFrequency="1"
-                    Value="{Binding ElementName=green_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Name="BtnColor"
+                                Content="COLOR" 
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Style="{DynamicResource BtnTheme}"
+                                IsEnabled="{Binding HasAPIKey}"
+                                Margin="0 0 0 50"
+                                Click="BtnColor_Click"/>
 
-                <TextBox x:Name="green_txtbox" 
-                         Style="{DynamicResource TbTheme}"
-                         Height="25"
-                         HorizontalAlignment="Right" 
-                         Margin="0 300 10 0" 
-                         TextWrapping="Wrap" 
-                         BorderThickness="1"
-                         Text="{Binding ElementName=green_slider, Path=Value}"
-                         VerticalAlignment="Top" 
-                         Width="70"/>
+                    </Grid>
 
-                <Button Name="BtnColor"
-                        Content="COLOR" 
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        Style="{DynamicResource BtnTheme}"
-                        IsEnabled="{Binding HasAPIKey}"
-                        Margin="0 0 0 50"
-                        Click="BtnColor_Click">
-                </Button>
+                    <Grid Grid.Column="2">
+                        <Label Name="green_Lbl" Content="GREEN"
+                               HorizontalAlignment="Center"
+                               FontFamily="Calibri"
+                               FontWeight="Bold"
+                               FontSize="15">
+                        </Label>
+
+                        <Slider x:Name="green_slider"
+                                Maximum="255"
+                                HorizontalAlignment="Center"
+                                Margin="0 44 0 0"
+                                Style="{DynamicResource SliderTheme}"
+                                VerticalAlignment="Top"
+                                Orientation="Vertical"
+                                Height="200"
+                                TickPlacement="None"
+                                SmallChange="1"
+                                IsSnapToTickEnabled="True"
+                                TickFrequency="1"
+                                Value="{Binding ElementName=green_txtbox, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBox x:Name="green_txtbox" 
+                                   Style="{DynamicResource TbTheme}"
+                                   Height="25"
+                                   HorizontalAlignment="Center" 
+                                   Margin="0 300 0 0" 
+                                   TextWrapping="Wrap"
+                                   BorderThickness="1"
+                                   Text="{Binding ElementName=green_slider, Path=Value}"
+                                   VerticalAlignment="Top" 
+                                   Width="70"/>
+
+                    </Grid>
+                </Grid>
             </Grid>
 
             <Grid Grid.Column="3">

@@ -191,7 +191,8 @@ public class HttpService
 
     public async Task<DeviceStateResponse> GetDeviceState()
     {
-        DeviceStateResponse deviceStateResponse = new();
+        DeviceStateResponse deviceStateResponse;
+
         GoveeLightBar<string> Govee = new()
         {
             device = Device,

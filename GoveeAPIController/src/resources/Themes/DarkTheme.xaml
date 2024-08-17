@@ -4,9 +4,9 @@
 
     <SolidColorBrush x:Key="BackgroundColor" Color="#FF1F1F1F"/>
     <SolidColorBrush x:Key="ForegroundColor" Color="White"/>
-    <SolidColorBrush x:Key="BorderColor" Color="#FF424242"/>
-    <SolidColorBrush x:Key="MouseOverBackgroundColor" Color="#FF424242"/>
-    <Color x:Key="ShadowColor">White</Color>
+    <SolidColorBrush x:Key="TransparentColor" Color="Transparent"/>
+    <SolidColorBrush x:Key="BorderColor" Color="#343a40"/>
+    <SolidColorBrush x:Key="MouseOverBackgroundColor" Color="#495057"/>
 
     <Style TargetType="{x:Type MW:MetroWindow}" x:Key="WindowTheme">
         <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
@@ -16,12 +16,12 @@
     </Style>
 
     <Style TargetType="TextBox" x:Key="TbTheme">
-        <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
+        <Setter Property="Background" Value="{DynamicResource TransparentColor}" />
         <Setter Property="Foreground" Value="{DynamicResource ForegroundColor}" />
     </Style>
 
     <Style TargetType="Button" x:Key="TopBtnTheme">
-        <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
+        <Setter Property="Background" Value="{DynamicResource TransparentColor}" />
         <Setter Property="Foreground" Value="{DynamicResource ForegroundColor}" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
@@ -31,19 +31,13 @@
     </Style>
 
     <Style TargetType="Button" x:Key="BtnTheme">
-        <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
+        <Setter Property="Background" Value="{DynamicResource BorderColor}" />
         <Setter Property="Foreground" Value="{DynamicResource ForegroundColor}" />
         <Setter Property="FontFamily" Value="Calibri"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Height" Value="30"/>
-        <Setter Property="BorderThickness" Value="1,1,0,0"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Width" Value="100"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect BlurRadius="4" Color="{DynamicResource ShadowColor}" Opacity="1" ShadowDepth="3"/>
-            </Setter.Value>
-        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -89,8 +83,95 @@
         </Setter>
     </Style>
 
-    <Style TargetType="Slider" x:Key="SliderTheme">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="DarkRed" />
+    <Style x:Key="TrackButtonStyle" TargetType="RepeatButton">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Border Background="{TemplateBinding Background}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SliderTheme" TargetType="Slider">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Grid>
+                        <TickBar x:Name="TopTick" 
+                                 Placement="Top"
+                                 Fill="{DynamicResource TransparentColor}"
+                                 Height="4"
+                                 Visibility="Visible"
+                                 VerticalAlignment="Top"
+                             />
+
+                        <Track x:Name="PART_Track"
+                           Minimum="{TemplateBinding Minimum}"
+                           Maximum="{TemplateBinding Maximum}"
+                           Value="{TemplateBinding Value}"
+                           IsDirectionReversed="{TemplateBinding IsDirectionReversed}">
+
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton
+                                    Style="{StaticResource TrackButtonStyle}"
+                                              IsTabStop="False"
+                                              BorderBrush="{DynamicResource TransparentColor}"
+                                              Background="{DynamicResource BorderColor}"
+                                    Width="6">
+                                    <RepeatButton.Template>
+                                        <ControlTemplate TargetType="RepeatButton">
+                                            <Border Background="{TemplateBinding Background}"
+                                                CornerRadius="0,0,3,3"/>
+                                        </ControlTemplate>
+                                    </RepeatButton.Template>
+                                </RepeatButton>
+                            </Track.DecreaseRepeatButton>
+
+                            <Track.Thumb>
+                                <Thumb Background="{DynamicResource BorderColor}" 
+                                       BorderThickness="0"
+                                       Width="20"
+                                       Height="20">
+                                    <Thumb.Template>
+                                        <ControlTemplate TargetType="Thumb">
+                                            <Grid>
+                                                <Ellipse x:Name="thumbEllipse"
+                                                     Fill="{TemplateBinding Background}" 
+                                                     Stroke="{TemplateBinding BorderBrush}" 
+                                                     StrokeThickness="{TemplateBinding BorderThickness}"/>
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="thumbEllipse" Property="Fill" Value="{DynamicResource ResourceKey=MouseOverBackgroundColor}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Thumb.Template>
+                                </Thumb>
+                            </Track.Thumb>
+
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton 
+                                    Style="{StaticResource TrackButtonStyle}"
+                                              IsTabStop="False"
+                                              BorderBrush="{DynamicResource TransparentColor}"
+                                              Background="{DynamicResource BorderColor}"
+                                    Width="4">
+                                    <RepeatButton.Template>
+                                        <ControlTemplate TargetType="RepeatButton">
+                                            <Border Background="{TemplateBinding Background}"
+                                                CornerRadius="2,2,0,0"/>
+                                        </ControlTemplate>
+                                    </RepeatButton.Template>
+                                </RepeatButton>
+                            </Track.IncreaseRepeatButton>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>
