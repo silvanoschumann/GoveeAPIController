@@ -75,12 +75,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
             ApiName = APIKEY;
         }
 
-        if (!string.IsNullOrWhiteSpace(APIKEY))
-        {
-            return true;
-        }
-
-        return false;
+        return !string.IsNullOrWhiteSpace(APIKEY);
     }
 
     protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -91,38 +86,28 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     private async void BtnClose_Click(object sender, RoutedEventArgs e)
     {
-        if (sender != null)
+        if (sender is Button)
         {
-            if (sender is Button)
+            var dialogSetting = new MetroDialogSettings()
             {
-                var dialogSetting = new MetroDialogSettings()
-                {
-                    AffirmativeButtonText = "Ja",
-                    NegativeButtonText = "Nein",
-                    AnimateShow = true,
-                    AnimateHide = true
-                };
+                AffirmativeButtonText = "Ja",
+                NegativeButtonText = "Nein",
+                AnimateShow = true,
+                AnimateHide = true
+            };
 
-                var erg = await this.ShowMessageAsync("ACHTUNG", "Wollen Sie die Anwendung wirklich schließen?", MessageDialogStyle.AffirmativeAndNegative, dialogSetting);
+            var erg = await this.ShowMessageAsync("ACHTUNG", "Wollen Sie die Anwendung wirklich schließen?", MessageDialogStyle.AffirmativeAndNegative, dialogSetting);
 
-                if (erg == MessageDialogResult.Affirmative)
-                {
-                    Application.Current.Shutdown();
-                }
-
+            if (erg == MessageDialogResult.Affirmative)
+            {
+                Application.Current.Shutdown();
             }
+
         }
-        else { return; }
     }
 
     private void BtnMinimize_Click(object sender, RoutedEventArgs e)
     {
-        if (sender == null)
-        {
-            return;
-
-        }
-
         if (sender is Button)
         {
             this.WindowState = WindowState.Minimized;
@@ -132,12 +117,6 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     private void TglBtnMaximize_Click(object sender, RoutedEventArgs e)
     {
-        if (sender == null)
-        {
-            return;
-
-        }
-
         if (sender is ToggleButton senderTglBtn)
         {
             this.WindowState = senderTglBtn.IsChecked == true ? WindowState.Maximized : WindowState.Normal;
@@ -147,11 +126,6 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     private void Grid_PreviewMouseMove(object sender, MouseEventArgs e)
     {
-        if (e == null)
-        {
-            return;
-        }
-
         if (e.LeftButton == MouseButtonState.Pressed)
         {
             this.DragMove();
@@ -280,20 +254,20 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         var uri = new Uri(theme, UriKind.Relative);
         ResourceDictionary resourceDict = new() { Source = uri };
 
+        RemoveExistingTheme();
+        Application.Current.Resources.MergedDictionaries.Add(resourceDict);
+    }
+
+    public void RemoveExistingTheme()
+    {
         foreach (var item in Application.Current.Resources.MergedDictionaries)
         {
-            if (item.Source.ToString().Contains(LIGHTTHEMEURL))
-            {
-                Application.Current.Resources.MergedDictionaries.Remove(item);
-                break;
-            }
-
-            if (item.Source.ToString().Contains(DARKTHEMEURL))
+            if (item.Source.ToString().Contains(LIGHTTHEMEURL) || item.Source.ToString().Contains(DARKTHEMEURL))
             {
                 Application.Current.Resources.MergedDictionaries.Remove(item);
                 break;
             }
         }
-        Application.Current.Resources.MergedDictionaries.Add(resourceDict);
     }
+
 }

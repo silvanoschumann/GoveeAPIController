@@ -71,11 +71,6 @@ namespace GoveeAPIController.View
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
-            if (sender == null)
-            {
-                return;
-            }
-
             if (sender is Button)
             {
                 this.Close();
@@ -85,11 +80,6 @@ namespace GoveeAPIController.View
 
         private void Grid_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (e == null)
-            {
-                return;
-            }
-
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 this.DragMove();
