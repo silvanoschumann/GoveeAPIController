@@ -14,6 +14,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     const string MODEL = "H6056";
     const string DEVICE = "7E:F6:CD:32:37:36:49:09";
     public string APIKEY;
+
     private readonly IDeviceService _deviceService;
     private readonly ApiService _apiService;
     private readonly HttpService _httpService;
@@ -145,7 +146,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     private async void BtnColorTemp_Click(object sender, RoutedEventArgs e)
     {
         await PutColorTemp((int)colorTemp_slider.Value);
-        Thread.Sleep(SLEEPTIME);
+        await Task.Delay(SLEEPTIME);
         GetDeviceState();
     }
 
@@ -153,7 +154,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
         int b = (int)brightness_slider.Value;
         await PutBrightness(b);
-        Thread.Sleep(SLEEPTIME);
+        await Task.Delay(SLEEPTIME);
         GetDeviceState();
     }
 
@@ -228,7 +229,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
             g = (short)green_slider.Value
         };
         await PutColor(color);
-        Thread.Sleep(SLEEPTIME);
+        await Task.Delay(SLEEPTIME);
         GetDeviceState();
     }
 
