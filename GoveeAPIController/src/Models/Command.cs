@@ -1,4 +1,4 @@
-﻿namespace GoveeAPIController.Classes;
+﻿namespace GoveeAPIController.src.Models;
 
 public class Command<T>
 {

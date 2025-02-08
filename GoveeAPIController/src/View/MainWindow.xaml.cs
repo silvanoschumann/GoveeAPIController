@@ -1,4 +1,7 @@
-﻿using GoveeAPIController.src.Services;
+﻿using GoveeAPIController.src.Models;
+using GoveeAPIController.src.Services;
+using GoveeAPIController.src.Services.Implementation;
+using GoveeAPIController.src.Services.Interfaces;
 using GoveeAPIController.View;
 
 namespace GoveeAPIController;
@@ -11,7 +14,9 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     const string MODEL = "H6056";
     const string DEVICE = "7E:F6:CD:32:37:36:49:09";
     public string APIKEY;
-    public HttpService httpServ;
+    private readonly IDeviceService _deviceService;
+    private readonly ApiService _apiService;
+    private readonly HttpService _httpService;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -61,7 +66,11 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     public MainWindow()
     {
         HasAPIKey = LookForApiKey();
-        httpServ = new(MODEL, DEVICE, APIKEY);
+
+        _deviceService = new DeviceService(DEVICE, MODEL);
+        _apiService = new ApiService(APIKEY);
+        _httpService = new HttpService(_deviceService, _apiService);
+
         SetTheme();
         InitializeComponent();
         this.DataContext = this;
@@ -150,27 +159,27 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     public async Task PutColorTemp(int colorTemp)
     {
-        await httpServ.SetColorTemp(colorTemp);
+        await _httpService.SetColorTemp(colorTemp);
     }
 
     public async Task PutBrightness(int brightness)
     {
-        await httpServ.SetBrightness(brightness);
+        await _httpService.SetBrightness(brightness);
     }
 
     public async Task PutOnOff(string OnOff)
     {
-        await httpServ.ToggleLight(OnOff);
+        await _httpService.ToggleLight(OnOff);
     }
 
     public async Task PutColor(RgbColor color)
     {
-        await httpServ.SetColor(color);
+        await _httpService.SetColor(color);
     }
 
     public async void GetDeviceState()
     {
-        var response = await httpServ.GetDeviceState();
+        var response = await _httpService.GetDeviceState();
 
         if (response != null)
         {
@@ -233,7 +242,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         settingsView.ShowDialog();
     }
 
-    public void SetTheme()
+    public static void SetTheme()
     {
         //string workingDir = Environment.CurrentDirectory;
         //string parnetDir = Directory.GetParent(workingDir).Parent.Parent.FullName;
@@ -258,7 +267,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         Application.Current.Resources.MergedDictionaries.Add(resourceDict);
     }
 
-    public void RemoveExistingTheme()
+    public static void RemoveExistingTheme()
     {
         foreach (var item in Application.Current.Resources.MergedDictionaries)
         {

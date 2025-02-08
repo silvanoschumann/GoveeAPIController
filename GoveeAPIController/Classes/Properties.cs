@@ -1,4 +1,6 @@
-﻿namespace GoveeAPIController.Classes;
+﻿using GoveeAPIController.src.Models;
+
+namespace GoveeAPIController.Classes;
 
 public record Properties
 {

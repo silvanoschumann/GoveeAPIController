@@ -1,4 +1,4 @@
-﻿namespace GoveeAPIController.Classes;
+﻿namespace GoveeAPIController.src.Models;
 
 class GoveeLightBar<T>
 {

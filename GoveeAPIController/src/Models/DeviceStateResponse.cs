@@ -1,4 +1,4 @@
-﻿namespace GoveeAPIController.Classes;
+﻿namespace GoveeAPIController.src.Models;
 public record DeviceStateResponse
 {
     public DeviceState data { get; set; }
