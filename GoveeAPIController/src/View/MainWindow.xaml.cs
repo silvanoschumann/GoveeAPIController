@@ -61,8 +61,13 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     public MainWindow()
     {
         GoveeApplication.LoadAppSettings();
-        InitializeServices();
-        GetDeviceState();
+
+        if (LookForApiKey())
+        {
+            InitializeServices();
+            GetDeviceState();
+        }
+
         SetTheme();
         InitializeComponent();
         this.DataContext = this;
@@ -70,19 +75,20 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     private void InitializeServices()
     {
-        LookForApiKey();
         _deviceService = new DeviceService(GoveeApplication.Device, GoveeApplication.Model);
         _apiService = new ApiService();
         _httpService = new HttpService(_deviceService, _apiService);
     }
 
-    private void LookForApiKey()
+    private bool LookForApiKey()
     {
         ApiKey = GoveeApplication.ApiKey;
         if (!string.IsNullOrWhiteSpace(ApiKey))
         {
             HasAPIKey = true;
+            return true;
         }
+        return false;
     }
 
     protected void OnPropertyChanged([CallerMemberName] string name = null)
