@@ -1,4 +1,5 @@
-﻿namespace GoveeAPIController.Classes;
+﻿
+namespace GoveeAPIController.Classes;
 
 public class Theme
 {

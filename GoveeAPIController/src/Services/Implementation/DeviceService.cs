@@ -2,7 +2,7 @@
 
 namespace GoveeAPIController.src.Services.Implementation;
 
-public class DeviceService : IDeviceService
+public class DeviceService
 {
     public string Device { get; set; }
     public string Model { get; set; }

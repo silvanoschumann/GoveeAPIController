@@ -9,15 +9,9 @@ namespace GoveeAPIController;
 public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 {
     const int SLEEPTIME = 4000;
-    const string DARKTHEMEURL = "./src/resources/Themes/DarkTheme.xaml";
-    const string LIGHTTHEMEURL = "./src/resources/Themes/LightTheme.xaml";
-    const string MODEL = "H6056";
-    const string DEVICE = "7E:F6:CD:32:37:36:49:09";
-    public string APIKEY;
-
-    private readonly IDeviceService _deviceService;
-    private readonly ApiService _apiService;
-    private readonly HttpService _httpService;
+    private DeviceService _deviceService;
+    private IApiService _apiService;
+    private IHttpService _httpService;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -36,16 +30,16 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         }
     }
 
-    private string _ApiName;
+    private string _ApiKey;
     private bool _hasAPIKey;
 
-    public string ApiName
+    public string ApiKey
     {
-        get => _ApiName; set
+        get => _ApiKey; set
         {
-            if (_ApiName != value)
+            if (_ApiKey != value)
             {
-                _ApiName = value;
+                _ApiKey = value;
                 OnPropertyChanged();
             }
         }
@@ -66,26 +60,29 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     public MainWindow()
     {
-        HasAPIKey = LookForApiKey();
-
-        _deviceService = new DeviceService(DEVICE, MODEL);
-        _apiService = new ApiService(APIKEY);
-        _httpService = new HttpService(_deviceService, _apiService);
-
+        GoveeApplication.LoadAppSettings();
+        InitializeServices();
+        GetDeviceState();
         SetTheme();
         InitializeComponent();
         this.DataContext = this;
     }
 
-    private bool LookForApiKey()
+    private void InitializeServices()
     {
-        if (ConfigurationManager.AppSettings["Api-Key"] != null)
-        {
-            APIKEY = ConfigurationManager.AppSettings["Api-Key"];
-            ApiName = APIKEY;
-        }
+        LookForApiKey();
+        _deviceService = new DeviceService(GoveeApplication.Device, GoveeApplication.Model);
+        _apiService = new ApiService();
+        _httpService = new HttpService(_deviceService, _apiService);
+    }
 
-        return !string.IsNullOrWhiteSpace(APIKEY);
+    private void LookForApiKey()
+    {
+        ApiKey = GoveeApplication.ApiKey;
+        if (!string.IsNullOrWhiteSpace(ApiKey))
+        {
+            HasAPIKey = true;
+        }
     }
 
     protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -96,23 +93,24 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     private async void BtnClose_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button)
+        if (sender is not Button)
         {
-            var dialogSetting = new MetroDialogSettings()
-            {
-                AffirmativeButtonText = "Ja",
-                NegativeButtonText = "Nein",
-                AnimateShow = true,
-                AnimateHide = true
-            };
+            return;
+        }
 
-            var erg = await this.ShowMessageAsync("ACHTUNG", "Wollen Sie die Anwendung wirklich schließen?", MessageDialogStyle.AffirmativeAndNegative, dialogSetting);
+        var dialogSetting = new MetroDialogSettings()
+        {
+            AffirmativeButtonText = "Ja",
+            NegativeButtonText = "Nein",
+            AnimateShow = true,
+            AnimateHide = true
+        };
 
-            if (erg == MessageDialogResult.Affirmative)
-            {
-                Application.Current.Shutdown();
-            }
+        var erg = await this.ShowMessageAsync("ACHTUNG", "Wollen Sie die Anwendung wirklich schließen?", MessageDialogStyle.AffirmativeAndNegative, dialogSetting);
 
+        if (erg == MessageDialogResult.Affirmative)
+        {
+            Application.Current.Shutdown();
         }
     }
 
@@ -147,7 +145,6 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
         await PutColorTemp((int)colorTemp_slider.Value);
         await Task.Delay(SLEEPTIME);
-        GetDeviceState();
     }
 
     private async void BtnBrightness_Click(object sender, RoutedEventArgs e)
@@ -155,7 +152,6 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         int b = (int)brightness_slider.Value;
         await PutBrightness(b);
         await Task.Delay(SLEEPTIME);
-        GetDeviceState();
     }
 
     public async Task PutColorTemp(int colorTemp)
@@ -196,6 +192,12 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
             TglBtnSwitch.IsChecked = true;
         }
 
+        if (response.data.properties[1].powerState == "off")
+        {
+            TglBtnSwitch.IsChecked = false;
+        }
+
+        TbResult = response.code.ToString();
         brightness_slider.Value = response.data.properties[2].brightness;
         blue_slider.Value = response.data.properties[3].color.b;
         red_slider.Value = response.data.properties[3].color.r;
@@ -230,7 +232,6 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         };
         await PutColor(color);
         await Task.Delay(SLEEPTIME);
-        GetDeviceState();
     }
 
     private void BtnSettings_Click(object sender, RoutedEventArgs e)
@@ -260,24 +261,24 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         //        });
         //    }
         //}
-        string theme = ConfigurationManager.AppSettings["CurrentTheme"];
+        string theme = GoveeApplication.CurrentTheme.Path;
         var uri = new Uri(theme, UriKind.Relative);
         ResourceDictionary resourceDict = new() { Source = uri };
 
-        RemoveExistingTheme();
+        //RemoveExistingTheme();
         Application.Current.Resources.MergedDictionaries.Add(resourceDict);
     }
 
-    public static void RemoveExistingTheme()
-    {
-        foreach (var item in Application.Current.Resources.MergedDictionaries)
-        {
-            if (item.Source.ToString().Contains(LIGHTTHEMEURL) || item.Source.ToString().Contains(DARKTHEMEURL))
-            {
-                Application.Current.Resources.MergedDictionaries.Remove(item);
-                break;
-            }
-        }
-    }
+    //public static void RemoveExistingTheme()
+    //{
+    //    foreach (var item in Application.Current.Resources.MergedDictionaries)
+    //    {
+    //        //if (item.Source.ToString().Contains(LIGHTTHEMEURL) || item.Source.ToString().Contains(DARKTHEMEURL))
+    //        //{
+    //        Application.Current.Resources.MergedDictionaries.Remove(item);
+    //        break;
+    //        //}
+    //    }
+    //}
 
 }

@@ -390,7 +390,7 @@
 
             <Grid Grid.Column="3">
                 <TextBox Background="Transparent"
-                         Text="{Binding ApiName,  UpdateSourceTrigger=PropertyChanged}"
+                         Text="{Binding ApiKey,  UpdateSourceTrigger=PropertyChanged}"
                          FontSize="20"
                          Style="{DynamicResource TbTheme}"
                          Height="36" 
