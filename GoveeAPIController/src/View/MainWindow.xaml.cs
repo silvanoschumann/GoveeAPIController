@@ -3,6 +3,7 @@ using GoveeAPIController.src.Services;
 using GoveeAPIController.src.Services.Implementation;
 using GoveeAPIController.src.Services.Interfaces;
 using GoveeAPIController.View;
+using System.Windows.Media;
 
 namespace GoveeAPIController;
 
@@ -15,20 +16,38 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private string _tbResult;
+    public string Response => $"{ResponseCode}, {ResponseMessage}";
 
-    public string TbResult
+
+    private string _responseCode;
+    public string ResponseCode
     {
-        get => _tbResult;
+        get => _responseCode;
         set
         {
-            if (_tbResult != value)
+            if (_responseCode != value)
             {
-                _tbResult = value;
+                _responseCode = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(Response));
             }
         }
     }
+
+    private string _responseMessage;
+    public string ResponseMessage
+    {
+        get => _responseMessage; set
+        {
+            if (_responseMessage != value)
+            {
+                _responseMessage = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Response));
+            }
+        }
+    }
+
 
     private string _ApiKey;
     private bool _hasAPIKey;
@@ -203,7 +222,9 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
             TglBtnSwitch.IsChecked = false;
         }
 
-        TbResult = response.code.ToString();
+        ResponseCode = response.code.ToString();
+        ResponseMessage = response.message;
+
         brightness_slider.Value = response.data.properties[2].brightness;
         blue_slider.Value = response.data.properties[3].color.b;
         red_slider.Value = response.data.properties[3].color.r;
