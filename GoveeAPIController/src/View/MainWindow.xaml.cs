@@ -16,6 +16,18 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private string _letzteAktualisierung;
+    public string LetzteAktualisierung
+    {
+        get => _letzteAktualisierung; set
+        {
+            if (_letzteAktualisierung != value)
+            {
+                _letzteAktualisierung = value;
+                OnPropertyChanged();
+            }
+        }
+    }
     public string Response => $"{ResponseCode}, {ResponseMessage}";
 
 
@@ -222,6 +234,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
             TglBtnSwitch.IsChecked = false;
         }
 
+        LetzteAktualisierung = $"Letzte Aktualisierung: {DateTime.Now:HH:mm:ss}";
         ResponseCode = response.code.ToString();
         ResponseMessage = response.message;
 
