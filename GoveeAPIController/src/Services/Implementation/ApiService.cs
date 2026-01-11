@@ -37,9 +37,12 @@ public class ApiService : IApiService
 
     public async Task<bool> SendCommand<T>(Command<T> command)
     {
-
-
-        var govee = new GoveeLightBar<T> { device = GoveeApplication.Device, model = GoveeApplication.Model, cmd = command };
+        var govee = new GoveeLightBar<T>
+        {
+            device = GoveeApplication.Device,
+            model = GoveeApplication.Model,
+            cmd = command
+        };
         var json = JsonConvert.SerializeObject(govee, Formatting.Indented);
 
         try

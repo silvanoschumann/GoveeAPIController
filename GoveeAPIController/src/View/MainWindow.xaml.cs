@@ -3,6 +3,7 @@ using GoveeAPIController.src.Services;
 using GoveeAPIController.src.Services.Implementation;
 using GoveeAPIController.src.Services.Interfaces;
 using GoveeAPIController.View;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace GoveeAPIController;
@@ -13,6 +14,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     private DeviceService _deviceService;
     private IApiService _apiService;
     private IHttpService _httpService;
+    private OpenWeatherService _weatherService;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -106,25 +108,31 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     public MainWindow()
     {
-        GoveeApplication.LoadAppSettings();
-
-        if (LookForApiKey())
-        {
-            InitializeServices();
-            GetDeviceState();
-            TurnOnAfterSunset();
-        }
-
-        SetTheme();
+        MainImplementation();
         InitializeComponent();
         this.DataContext = this;
     }
 
-    private async void TurnOnAfterSunset()
+    private async void MainImplementation()
     {
-        DateTime sunset = DateTime.Today.AddHours(18);
+        GoveeApplication.LoadAppSettings();
+        SetTheme();
 
-        if (DateTime.Now < sunset)
+        if (LookForApiKey())
+        {
+            InitializeServices();
+            await GetDeviceState();
+            await TurnOnAfterSunset();
+        }
+
+    }
+
+    private async Task TurnOnAfterSunset()
+    {
+        DateTimeOffset sunsetUtc = await _weatherService.GetSunsetAsync();
+        DateTime sunsetLocal = sunsetUtc.LocalDateTime;
+
+        if (DateTime.Now < sunsetLocal)
         {
             return;
         }
@@ -141,6 +149,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         _deviceService = new DeviceService(GoveeApplication.Device, GoveeApplication.Model);
         _apiService = new ApiService();
         _httpService = new HttpService(_deviceService, _apiService);
+        _weatherService = new OpenWeatherService();
     }
 
     private bool LookForApiKey()
@@ -243,7 +252,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         await _httpService.SetColor(color);
     }
 
-    public async void GetDeviceState()
+    public async Task GetDeviceState()
     {
         var response = await _httpService.GetDeviceState();
 
@@ -289,9 +298,9 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         }
     }
 
-    private void BtnDeviceState_Click(object sender, RoutedEventArgs e)
+    private async void BtnDeviceState_Click(object sender, RoutedEventArgs e)
     {
-        GetDeviceState();
+        await GetDeviceState();
     }
 
     private async void BtnColor_Click(object sender, RoutedEventArgs e)
