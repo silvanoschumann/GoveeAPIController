@@ -16,6 +16,21 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private bool _isSwitchOn;
+
+    public bool IsSwitchOn
+    {
+        get => _isSwitchOn;
+        set
+        {
+            if (_isSwitchOn != value)
+            {
+                _isSwitchOn = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     private string _letzteAktualisierung;
     public string LetzteAktualisierung
     {
@@ -97,11 +112,28 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         {
             InitializeServices();
             GetDeviceState();
+            TurnOnAfterSunset();
         }
 
         SetTheme();
         InitializeComponent();
         this.DataContext = this;
+    }
+
+    private async void TurnOnAfterSunset()
+    {
+        DateTime sunset = DateTime.Today.AddHours(18);
+
+        if (DateTime.Now < sunset)
+        {
+            return;
+        }
+
+        if (IsSwitchOn != true)
+        {
+            await PutOnOff("on");
+            IsSwitchOn = true;
+        }
     }
 
     private void InitializeServices()
@@ -226,12 +258,12 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
         if (response.data.properties[1].powerState == "on")
         {
-            TglBtnSwitch.IsChecked = true;
+            IsSwitchOn = true;
         }
 
         if (response.data.properties[1].powerState == "off")
         {
-            TglBtnSwitch.IsChecked = false;
+            IsSwitchOn = false;
         }
 
         LetzteAktualisierung = $"Letzte Aktualisierung: {DateTime.Now:HH:mm:ss}";
