@@ -33,10 +33,25 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
         }
     }
 
+    private string _heutigerSonnenuntergang;
+    public string HeutigerSonnenuntergang
+    {
+        get => _heutigerSonnenuntergang;
+        set
+        {
+            if (_heutigerSonnenuntergang != value)
+            {
+                _heutigerSonnenuntergang = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     private string _letzteAktualisierung;
     public string LetzteAktualisierung
     {
-        get => _letzteAktualisierung; set
+        get => _letzteAktualisierung;
+        set
         {
             if (_letzteAktualisierung != value)
             {
@@ -45,8 +60,8 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
             }
         }
     }
-    public string Response => $"{ResponseCode}, {ResponseMessage}";
 
+    public string Response => $"{ResponseCode}, {ResponseMessage}";
 
     private string _responseCode;
     public string ResponseCode
@@ -131,6 +146,8 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
         DateTimeOffset sunsetUtc = await _weatherService.GetSunsetAsync();
         DateTime sunsetLocal = sunsetUtc.LocalDateTime;
+        HeutigerSonnenuntergang = $"Sonnenuntergang um: {sunsetLocal:HH:mm:ss}";
+
 
         if (DateTime.Now < sunsetLocal)
         {
