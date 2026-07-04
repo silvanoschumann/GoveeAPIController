@@ -3,27 +3,47 @@ namespace GoveeAPIController.Classes;
 
 public static class GoveeApplication
 {
-    public static string ThemesPath { get; set; }
-    public static Theme CurrentTheme { get; set; } = new Theme();
-    public static string OpenWeatherApiKey { get; set; }
-    public static string ApiKey { get; set; }
-    public static string Device { get; set; }
-    public static string Model { get; set; }
+    public static string ThemesPath { get; private set; } = string.Empty;
+    public static Theme CurrentTheme { get; private set; } = new();
+    public static string OpenWeatherApiKey { get; private set; } = string.Empty;
+    public static string ApiKey { get; private set; } = string.Empty;
+    public static string Device { get; private set; } = string.Empty;
+    public static string Model { get; private set; } = string.Empty;
 
     public static void LoadAppSettings()
     {
-        ThemesPath = ConfigurationManager.AppSettings["ThemesPath"];
-        GetCurrentTheme();
-        ApiKey = ConfigurationManager.AppSettings["ApiKey"];
-        OpenWeatherApiKey = ConfigurationManager.AppSettings["OpenWeatherApiKey"];
-        Device = ConfigurationManager.AppSettings["Device"];
-        Model = ConfigurationManager.AppSettings["Model"];
+        ThemesPath = GetSetting("ThemesPath");
+        ApiKey = GetSetting("ApiKey");
+        OpenWeatherApiKey = GetSetting("OpenWeatherApiKey");
+        Device = GetSetting("Device");
+        Model = GetSetting("Model");
+
+        string themeName = GetSetting("CurrentTheme");
+
+        CurrentTheme = new Theme
+        {
+            Name = themeName,
+            Path = GetSetting(themeName),
+            IsSelected = true
+        };
     }
 
-    private static void GetCurrentTheme()
+    private static string GetSetting(string key)
     {
-        CurrentTheme.Name = ConfigurationManager.AppSettings["CurrentTheme"];
-        CurrentTheme.Path = ConfigurationManager.AppSettings[CurrentTheme.Name];
-        CurrentTheme.IsSelected = true;
+        return ConfigurationManager.AppSettings[key] ?? throw new ConfigurationErrorsException($"The app setting '{key}' is missing.");
+    }
+
+    public static void SetTheme(Theme theme)
+    {
+        Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+        AppSettingsSection appset = (AppSettingsSection)config.GetSection("appSettings");
+
+        appset.Settings["CurrentTheme"].Value = theme.Name;
+
+        config.Save(ConfigurationSaveMode.Modified);
+        ConfigurationManager.RefreshSection("appSettings");
+
+        CurrentTheme = theme;
     }
 }

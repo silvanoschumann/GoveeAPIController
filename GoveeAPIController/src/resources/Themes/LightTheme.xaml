@@ -18,6 +18,25 @@
     <Style TargetType="TextBox" x:Key="TbTheme">
         <Setter Property="Background" Value="{DynamicResource TransparentColor}" />
         <Setter Property="Foreground" Value="{DynamicResource ForegroundColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MouseOverBackgroundColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="5">
+
+                        <ScrollViewer
+                    x:Name="PART_ContentHost"
+                    Margin="5,2"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style TargetType="Button" x:Key="TopBtnTheme">

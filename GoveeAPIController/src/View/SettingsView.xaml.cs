@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 
 namespace GoveeAPIController.View
 {
@@ -38,84 +39,66 @@ namespace GoveeAPIController.View
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public void ReadThemes()
+        private void ReadThemes()
         {
-            string workingDir = Environment.CurrentDirectory;
-            string parentDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            Environment.CurrentDirectory = parentDir;
-            string themePath = ConfigurationManager.AppSettings["ThemesPath"];
+            ThemeCollection.Clear();
 
-            if (Directory.Exists(themePath))
+            string currentTheme = ConfigurationManager.AppSettings["CurrentTheme"];
+
+            foreach (string key in ConfigurationManager.AppSettings.AllKeys)
             {
-                var themeFiles = Directory.GetFiles(themePath, "*xaml");
+                if (!key.EndsWith(".xaml")) { continue; }
 
-                foreach (var themeFile in themeFiles)
+                ThemeCollection.Add(new Theme
                 {
-                    Theme thm = new()
-                    {
-                        Name = themeFile.Replace(themePath + "\\", ""),
-                        Path = themeFile.Replace('\\', '/')
-                    };
-
-                    if (ConfigurationManager.AppSettings["CurrentTheme"].Contains(thm.Name))
-                    {
-                        thm.IsSelected = true;
-                    }
-
-                    ThemeCollection.Add(thm);
-                }
+                    Name = key,
+                    Path = ConfigurationManager.AppSettings[key],
+                    IsSelected = key == currentTheme
+                });
             }
-
-            Environment.CurrentDirectory = workingDir;
         }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button)
-            {
-                this.Close();
-            }
-
+            if (sender is not Button) { return; }
+            this.Close();
         }
 
         private void Grid_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                this.DragMove();
-            }
-
+            if (e.LeftButton != MouseButtonState.Pressed) { return; }
+            this.DragMove();
         }
 
 
         private async void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Theme theme in ThemeCollection)
+            Theme selectedTheme = ThemeCollection.FirstOrDefault(t => t.IsSelected);
+
+            if (selectedTheme == null) { return; }
+
+            if (ConfigurationManager.AppSettings["CurrentTheme"] == selectedTheme.Name)
             {
-                if (theme.IsSelected)
-                {
-                    if (ConfigurationManager.AppSettings["CurrentTheme"] != theme.Path)
-                    {
-                        Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                        AppSettingsSection appset = (AppSettingsSection)config.GetSection("appSettings");
-                        appset.Settings["CurrentTheme"].Value = theme.Path;
-                        config.Save(ConfigurationSaveMode.Modified);
-                        ConfigurationManager.RefreshSection("appSettings");
-
-                        var dialogSetting = new MetroDialogSettings()
-                        {
-                            AffirmativeButtonText = "Ok",
-                            AnimateShow = true,
-                            AnimateHide = true
-                        };
-
-                        await this.ShowMessageAsync("SPEICHERN", "Es wurde eine Speicherung vorgenommen!", MessageDialogStyle.Affirmative, dialogSetting);
-
-                        this.Close();
-
-                    }
-                }
+                this.Close();
+                return;
             }
+
+            GoveeApplication.SetTheme(selectedTheme);
+
+            var dialogSetting = new MetroDialogSettings
+            {
+                AffirmativeButtonText = "Ok",
+                AnimateShow = true,
+                AnimateHide = true
+            };
+
+            await this.ShowMessageAsync(
+                "SPEICHERN",
+                "Es wurde eine Speicherung vorgenommen!",
+                MessageDialogStyle.Affirmative,
+                dialogSetting);
+
+            this.Close();
         }
     }
 }
