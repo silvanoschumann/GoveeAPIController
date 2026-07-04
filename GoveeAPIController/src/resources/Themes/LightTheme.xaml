@@ -7,6 +7,7 @@
     <SolidColorBrush x:Key="TransparentColor" Color="Transparent"/>
     <SolidColorBrush x:Key="BorderColor" Color="#e9ecef"/>
     <SolidColorBrush x:Key="MouseOverBackgroundColor" Color="#dee2e6"/>
+    <SolidColorBrush x:Key="SliderColor" Color="#89A306"/>
 
     <Style TargetType="{x:Type MW:MetroWindow}" x:Key="WindowTheme">
         <Setter Property="Background" Value="{DynamicResource BackgroundColor}" />
@@ -138,7 +139,7 @@
                                     Style="{StaticResource TrackButtonStyle}"
                                               IsTabStop="False"
                                               BorderBrush="{DynamicResource TransparentColor}"
-                                              Background="{DynamicResource BorderColor}"
+                                              Background="{DynamicResource SliderColor}"
                                     Width="6">
                                     <RepeatButton.Template>
                                         <ControlTemplate TargetType="RepeatButton">
