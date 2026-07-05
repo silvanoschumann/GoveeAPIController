@@ -184,9 +184,7 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
-                <Border BorderThickness="1" BorderBrush="#FF424242">
-                </Border>
-
+            
                 <Slider x:Name="brightness_slider"
                         Maximum="100"
                         HorizontalAlignment="Center"
@@ -225,7 +223,6 @@
 
             </Grid>
             <Grid Grid.Column="1">
-                <Border BorderThickness="1" BorderBrush="#FF424242"/>
 
                 <Slider x:Name="colorTemp_slider"
                         Maximum="9000"
@@ -265,8 +262,6 @@
             </Grid>
 
             <Grid Grid.Column="2">
-                <Border BorderThickness="1" BorderBrush="#FF424242"/>
-
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -306,15 +301,6 @@
                                  Style="{DynamicResource TbTheme}"
                                  Height="25"
                                  Width="70"/>
-
-                        <Button Name="BtnColor"
-                                Content="COLOR" 
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Bottom"
-                                Style="{DynamicResource BtnTheme}"
-                                IsEnabled="{Binding HasAPIKey}"
-                                Margin="0 0 0 50"
-                                Click="BtnColor_Click"/>
                     </Grid>
 
                     <Grid Grid.Column="1">
@@ -350,7 +336,14 @@
                                  VerticalAlignment="Top"
                                  Width="70"/>
 
-
+                        <Button Name="BtnColor"
+                                Content="COLOR" 
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Style="{DynamicResource BtnTheme}"
+                                IsEnabled="{Binding HasAPIKey}"
+                                Margin="0 0 0 50"
+                                Click="BtnColor_Click"/>
 
                     </Grid>
 
@@ -387,68 +380,23 @@
                                    VerticalAlignment="Top" 
                                    Width="70"/>
 
-                        <ToggleButton 
-                            Name="TglBtnSwitch"
-                            IsEnabled="{Binding HasAPIKey}"
-                            Click="TglBtnSwitch_Click"
-                            HorizontalAlignment="Center"
-                            IsChecked="{Binding IsSwitchOn, Mode=TwoWay}"
-                            Margin="0 0 0 40">
-                            <ToggleButton.Style>
-                                <Style TargetType="ToggleButton">
-                                    <Setter Property="Foreground" Value="White"/>
-                                    <Setter Property="Height" Value="36"/>
-                                    <Setter Property="Width" Value="36"/>
-                                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                                    <Setter Property="VerticalAlignment" Value="Bottom"/>
-                                    <Setter Property="Margin" Value="0 0 30 30"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="ToggleButton">
-                                                <Border CornerRadius="10">
-                                                    <Grid>
-
-                                                        <MD:PackIcon Name="PIOff"
-                                             Background="DarkRed"
-                                             Kind="PowerSettingsNew"
-                                             Width="36"
-                                             Height="36"
-                                             HorizontalAlignment="Stretch"
-                                             VerticalAlignment="Stretch"/>
-
-                                                        <MD:PackIcon Name="PIOn"
-                                             Background="LimeGreen"
-                                             Kind="PowerSettingsNew"
-                                             Visibility="Collapsed"
-                                             Width="36"
-                                             Height="36"
-                                             HorizontalAlignment="Stretch"
-                                             VerticalAlignment="Stretch">
-                                                        </MD:PackIcon>
-                                                    </Grid>
-
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsChecked" Value="True">
-                                                        <Setter TargetName="PIOn" Property="Visibility" Value="Visible"/>
-                                                        <Setter TargetName="PIOff" Property="Visibility" Value="Collapsed"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </ToggleButton.Style>
-                        </ToggleButton>
-
                     </Grid>
                 </Grid>
             </Grid>
 
             <Grid Grid.Column="3">
-                <Border BorderThickness="1" BorderBrush="#FF424242"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <Button x:Name="BtnDeviceState"
+                    <Grid Grid.Column="0">
+                        <Button x:Name="BtnDeviceState"
                         VerticalAlignment="Top"
                         HorizontalAlignment="Left"
                         Margin="10 80 0 0"
@@ -458,14 +406,93 @@
                         Click="BtnDeviceState_Click"
                         />
 
-                <Button VerticalAlignment="Top"
+                        <Button VerticalAlignment="Top"
                         HorizontalAlignment="Left"
                         Style="{DynamicResource BtnTheme}"
                         IsEnabled="{Binding HasAPIKey}"
                         Margin="10 120 0 0"
                         Content="DEVICE">
-                </Button>
+                        </Button>
 
+                    </Grid>
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center">
+
+                        <MD:PackIcon
+                            Kind="WeatherSunset"
+                            Width="24"
+                            Height="24"/>
+
+                        <TextBox
+                            Margin="5,0,0,0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            IsReadOnly="True"
+                            Text="{Binding HeutigerSonnenuntergang}"
+                            Style="{DynamicResource TbTheme}"/>                 
+                    </StackPanel>
+
+
+
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <ToggleButton 
+     Name="TglBtnSwitch"
+     IsEnabled="{Binding HasAPIKey}"
+     Click="TglBtnSwitch_Click"
+     HorizontalAlignment="Center"
+     IsChecked="{Binding IsSwitchOn, Mode=TwoWay}"
+     Margin="0 0 0 40">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Height" Value="36"/>
+                                <Setter Property="Width" Value="36"/>
+                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="VerticalAlignment" Value="Bottom"/>
+                                <Setter Property="Margin" Value="0 0 30 30"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border CornerRadius="10">
+                                                <Grid>
+
+                                                    <MD:PackIcon Name="PIOff"
+                      Background="DarkRed"
+                      Kind="PowerSettingsNew"
+                      Width="36"
+                      Height="36"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"/>
+
+                                                    <MD:PackIcon Name="PIOn"
+                      Background="LimeGreen"
+                      Kind="PowerSettingsNew"
+                      Visibility="Collapsed"
+                      Width="36"
+                      Height="36"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
+                                                    </MD:PackIcon>
+                                                </Grid>
+
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="PIOn" Property="Visibility" Value="Visible"/>
+                                                    <Setter TargetName="PIOff" Property="Visibility" Value="Collapsed"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                </Grid>
             </Grid>
         </Grid>
         <Grid Grid.Row="2">
@@ -499,17 +526,6 @@
                  BorderThickness="0"
                  Width="100" />
             </Grid>
-
-            <TextBox Grid.Column="1"
-             Background="Transparent"
-             Text="{Binding HeutigerSonnenuntergang, Mode=OneWay}"
-             IsReadOnly="True"
-             FontSize="10"
-             Style="{DynamicResource TbTheme}"
-             BorderThickness="0"
-             Width="auto"
-             Margin="0 0 20 0"
-             HorizontalAlignment="Right" />
         </Grid>
     </Grid>
 </MW:MetroWindow>

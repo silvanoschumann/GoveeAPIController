@@ -146,7 +146,7 @@ public partial class MainWindow : MetroWindow, INotifyPropertyChanged
     {
         DateTimeOffset sunsetUtc = await _weatherService.GetSunsetAsync();
         DateTime sunsetLocal = sunsetUtc.LocalDateTime;
-        HeutigerSonnenuntergang = $"Sonnenuntergang um: {sunsetLocal:HH:mm:ss}";
+        HeutigerSonnenuntergang = $"{sunsetLocal:HH:mm:ss}";
 
 
         if (DateTime.Now < sunsetLocal)
